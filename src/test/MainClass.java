@@ -3,74 +3,45 @@ package test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 class Solution {
-    public int threeSumClosest(int[] nums, int target) {
-        if (nums == null || nums.length < 3)
-            return 0;
 
-        Arrays.sort(nums);
+    public static int OVER_FLOW_MAX = 0x7fffffff;
+    public static int OVER_FLOW_MIN = 0x80000000;
 
-        long result = Integer.MIN_VALUE + target;
-        for (int i = 0; i < nums.length - 2; i++) {
-            int tmp = nums[i] + twoSumClosest(nums, i + 1, nums.length - 1, target - nums[i]);
-            if (tmp == target) {
-                return target;
+    public int divide(int dividend, int divisor) {
+        boolean positive = (dividend > 0 && divisor > 0) || (dividend < 0 && divisor < 0);
+        long tmpdividend = dividend;
+        long tmpdivisor = divisor;
+        long newDividend = tmpdividend < 0 ? -tmpdividend : tmpdividend;
+        long newDivisor = tmpdivisor < 0 ? -tmpdivisor : tmpdivisor;
+        long result = 0;
+        while (newDividend >= newDivisor) {
+            int factory = 0;
+            while (newDividend >= (newDivisor << (factory + 1))) {
+                factory++;
             }
-            if (Math.abs(tmp - target) < Math.abs(result - target)) {
-                result = tmp;
-            }
+            newDividend -= (newDivisor << factory);
+            result += (1L << factory);
         }
-        return (int) result;
-    }
-
-    public int twoSumClosest(int[] nums, int start, int end, int target) {
-        long result = Integer.MIN_VALUE + target;
-        while (start < end) {
-            int tmp = nums[start] + nums[end];
-            if (tmp == target) {
-                return target;
-            }
-            if (Math.abs(tmp - target) < Math.abs(result - target)) {
-                result = tmp;
-            }
-            if (tmp > target) {
-                end--;
-            } else {
-                start++;
-            }
+        result = positive ? result : -result;
+        if (result > OVER_FLOW_MAX || result < OVER_FLOW_MIN) {
+            return OVER_FLOW_MAX;
         }
         return (int) result;
     }
 }
 
 public class MainClass {
-    public static int[] stringToIntegerArray(String input) {
-        input = input.trim();
-        input = input.substring(1, input.length() - 1);
-        if (input.length() == 0) {
-            return new int[0];
-        }
-
-        String[] parts = input.split(",");
-        int[] output = new int[parts.length];
-        for (int index = 0; index < parts.length; index++) {
-            String part = parts[index].trim();
-            output[index] = Integer.parseInt(part);
-        }
-        return output;
-    }
-
     public static void main(String[] args) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String line;
         while ((line = in.readLine()) != null) {
-            int[] nums = stringToIntegerArray(line);
+            int dividend = Integer.parseInt(line);
             line = in.readLine();
-            int target = Integer.parseInt(line);
+            int divisor = Integer.parseInt(line);
 
-            int ret = new Solution().threeSumClosest(nums, target);
+            int ret = new Solution().divide(dividend, divisor);
 
             String out = String.valueOf(ret);
 
