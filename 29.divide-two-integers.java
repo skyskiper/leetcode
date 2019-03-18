@@ -44,24 +44,28 @@
  */
 class Solution {
 
-    public static int OVER_FLOW = (2 << 31) - 1;
+    public static int OVER_FLOW_MAX = 0x7fffffff;
+    public static int OVER_FLOW_MIN = 0x80000000;
 
     public int divide(int dividend, int divisor) {
-        boolean positive = (dividend > 0 && divisor > 0) || (dividend < 0 || divisor < 0);
-        long newDividend = dividend < 0 ? -dividend : dividend;
-        long newDivisor = divisor < 0 ? -divisor : divisor;
-        int result = 0;
-        while (newDividend > newDivisor) {
+        boolean positive = (dividend > 0 && divisor > 0) || (dividend < 0 && divisor < 0);
+        long tmpdividend = dividend;
+        long tmpdivisor = divisor;
+        long newDividend = tmpdividend < 0 ? -tmpdividend : tmpdividend;
+        long newDivisor = tmpdivisor < 0 ? -tmpdivisor : tmpdivisor;
+        long result = 0;
+        while (newDividend >= newDivisor) {
             int factory = 0;
-            while (newDividend > (newDivisor << factory)) {
+            while (newDividend >= (newDivisor << (factory + 1))) {
                 factory++;
             }
             newDividend -= (newDivisor << factory);
-            result += (1 >> factory);
+            result += (1L << factory);
         }
-        if (Math.abs(result) > OVER_FLOW) {
-            return OVER_FLOW;
+        result = positive ? result : -result;
+        if (result > OVER_FLOW_MAX || result < OVER_FLOW_MIN) {
+            return OVER_FLOW_MAX;
         }
-        return positive ? result : -result;
+        return (int) result;
     }
 }
