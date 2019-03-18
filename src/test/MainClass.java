@@ -5,45 +5,85 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 class Solution {
+    public void nextPermutation(int[] nums) {
+        if (nums == null || nums.length < 2)
+            return;
 
-    public static int OVER_FLOW_MAX = 0x7fffffff;
-    public static int OVER_FLOW_MIN = 0x80000000;
-
-    public int divide(int dividend, int divisor) {
-        boolean positive = (dividend > 0 && divisor > 0) || (dividend < 0 && divisor < 0);
-        long tmpdividend = dividend;
-        long tmpdivisor = divisor;
-        long newDividend = tmpdividend < 0 ? -tmpdividend : tmpdividend;
-        long newDivisor = tmpdivisor < 0 ? -tmpdivisor : tmpdivisor;
-        long result = 0;
-        while (newDividend >= newDivisor) {
-            int factory = 0;
-            while (newDividend >= (newDivisor << (factory + 1))) {
-                factory++;
+        int changePos = nums.length - 1;
+        while (changePos > 0 && nums[changePos] <= nums[changePos - 1]) {
+            changePos--;
+        }
+        if (nums[changePos - 1] >= nums[changePos]) {
+            // 依次递减，此时需要全部倒序
+            revert(nums, 0, nums.length - 1);
+        } else {
+            // changPos（包括changePos）后面的递减，此时从中找出最小的大于changePos-1的数置换
+            int changePos2 = nums.length - 1;
+            while (nums[changePos - 1] >= nums[changePos2]) {
+                changePos2--;
             }
-            newDividend -= (newDivisor << factory);
-            result += (1L << factory);
+
+            int tmp = nums[changePos - 1];
+            nums[changePos - 1] = nums[changePos2];
+            nums[changePos2] = tmp;
+
+            revert(nums, changePos, nums.length - 1);
         }
-        result = positive ? result : -result;
-        if (result > OVER_FLOW_MAX || result < OVER_FLOW_MIN) {
-            return OVER_FLOW_MAX;
+
+    }
+
+    private void revert(int[] nums, int start, int end) {
+        while (start < end) {
+            int tmp = nums[start];
+            nums[start] = nums[end];
+            nums[end] = tmp;
         }
-        return (int) result;
     }
 }
 
+
 public class MainClass {
+    public static int[] stringToIntegerArray(String input) {
+        input = input.trim();
+        input = input.substring(1, input.length() - 1);
+        if (input.length() == 0) {
+            return new int[0];
+        }
+
+        String[] parts = input.split(",");
+        int[] output = new int[parts.length];
+        for (int index = 0; index < parts.length; index++) {
+            String part = parts[index].trim();
+            output[index] = Integer.parseInt(part);
+        }
+        return output;
+    }
+
+    public static String integerArrayToString(int[] nums, int length) {
+        if (length == 0) {
+            return "[]";
+        }
+
+        String result = "";
+        for (int index = 0; index < length; index++) {
+            int number = nums[index];
+            result += Integer.toString(number) + ", ";
+        }
+        return "[" + result.substring(0, result.length() - 2) + "]";
+    }
+
+    public static String integerArrayToString(int[] nums) {
+        return integerArrayToString(nums, nums.length);
+    }
+
     public static void main(String[] args) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String line;
         while ((line = in.readLine()) != null) {
-            int dividend = Integer.parseInt(line);
-            line = in.readLine();
-            int divisor = Integer.parseInt(line);
+            int[] nums = stringToIntegerArray(line);
 
-            int ret = new Solution().divide(dividend, divisor);
-
-            String out = String.valueOf(ret);
+            new Solution().nextPermutation(nums);
+            String out = integerArrayToString(nums);
 
             System.out.print(out);
         }
