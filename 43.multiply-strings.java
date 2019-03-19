@@ -1,18 +1,52 @@
-package test;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * @lc app=leetcode id=43 lang=java
+ *
+ * [43] Multiply Strings
+ *
+ * https://leetcode.com/problems/multiply-strings/description/
+ *
+ * algorithms
+ * Medium (30.02%)
+ * Total Accepted:    187.4K
+ * Total Submissions: 622.9K
+ * Testcase Example:  '"2"\n"3"'
+ *
+ * Given two non-negative integers num1 and num2 represented as strings, return
+ * the product of num1 and num2, also represented as a string.
+ * 
+ * Example 1:
+ * 
+ * 
+ * Input: num1 = "2", num2 = "3"
+ * Output: "6"
+ * 
+ * Example 2:
+ * 
+ * 
+ * Input: num1 = "123", num2 = "456"
+ * Output: "56088"
+ * 
+ * 
+ * Note:
+ * 
+ * 
+ * The length of both num1 and num2 is < 110.
+ * Both num1 and num2 contain only digits 0-9.
+ * Both num1 and num2 do not contain any leading zero, except the number 0
+ * itself.
+ * You must not use any built-in BigInteger library or convert the inputs to
+ * integer directly.
+ * 
+ * 
+ */
 class Solution {
 
     private Map<String, String> cache = new HashMap<>();
 
     public String multiply(String num1, String num2) {
-        if (num1.length() == 1 && num1.charAt(0) == '0') return "0";
-        if (num2.length() == 1 && num2.charAt(0) == '0') return "0";
         int length = Math.min(num1.length(), num2.length());
         if (num1.length() < num2.length()) {
             String tmp = num1;
@@ -53,18 +87,14 @@ class Solution {
         for (int i = 0; i <= length; i++) {
             char char1 = '0', char2 = '0';
             if (num1.length() > i) {
-                char1 = num1.charAt(num1.length() - 1 - i);
+                char1 = num1.charAt(i);
             }
             if (num2.length() > i) {
-                char2 = num2.charAt(num2.length() - 1 - i);
+                char2 = num2.charAt(i);
             }
             carry = add(char1, char2, carry, result);
         }
-        int zero = 0;
-        while (result.charAt(zero) == '0') {
-            zero++;
-        }
-        String str = result.substring(zero);
+        String str = result.toString();
         cache.put(num1 + num2, str);
         return str;
     }
@@ -72,32 +102,10 @@ class Solution {
     public char add(char num1, char num2, char carry, StringBuilder builder) {
         int result = num1 + num2 + carry - '0' - '0' - '0';
         if (result > 9) {
-            builder.insert(0, result - 10);
+            builder.append(result - 10);
             return '1';
         }
-        builder.insert(0, result);
+        builder.append(result);
         return '0';
-    }
-}
-
-public class MainClass {
-    public static String stringToString(String input) {
-        return input;
-    }
-
-    public static void main(String[] args) throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        String line;
-        while ((line = in.readLine()) != null) {
-            String num1 = stringToString(line);
-            line = in.readLine();
-            String num2 = stringToString(line);
-
-            String ret = new Solution().multiply(num1, num2);
-
-            String out = (ret);
-
-            System.out.print(out);
-        }
     }
 }
