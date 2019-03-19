@@ -49,12 +49,12 @@ class Solution {
         int right = nums.length - 1;
 
         if (nums[left] <= target) {
-            while (nums[left] >= nums[right]) {
+            while (nums[left] >= nums[right] && left < right) {
                 right--;
             }
             return binarySearch(nums, left, right, target);
         } else if (nums[right] >= target) {
-            while (nums[left] >= nums[right]) {
+            while (nums[left] >= nums[right] && left < right) {
                 left++;
             }
             return binarySearch(nums, left, right, target);

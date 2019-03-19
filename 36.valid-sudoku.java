@@ -102,12 +102,12 @@ class Solution {
     }
 
     public boolean isValidSudok(char[][] board, int rowLeft, int rowRight, int columnLeft, int columnRight) {
-        boolean[] result = new boolean[9];
+        boolean[] result = new boolean[10];
         for (int i = rowLeft; i <= rowRight; i++) {
             for (int j = columnLeft; j <= columnRight; j++) {
                 if (board[i][j] != '.') {
                     int position = board[i][j] - '0';
-                    if (result.position) {
+                    if (result[position]) {
                         return false;
                     }
                     result[position] = true;

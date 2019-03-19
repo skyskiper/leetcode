@@ -47,6 +47,8 @@ class Solution {
     private Map<String, String> cache = new HashMap<>();
 
     public String multiply(String num1, String num2) {
+        if (num1.length() == 1 && num1.charAt(0) == '0') return "0";
+        if (num2.length() == 1 && num2.charAt(0) == '0') return "0";
         int length = Math.min(num1.length(), num2.length());
         if (num1.length() < num2.length()) {
             String tmp = num1;
@@ -87,14 +89,18 @@ class Solution {
         for (int i = 0; i <= length; i++) {
             char char1 = '0', char2 = '0';
             if (num1.length() > i) {
-                char1 = num1.charAt(i);
+                char1 = num1.charAt(num1.length() - 1 - i);
             }
             if (num2.length() > i) {
-                char2 = num2.charAt(i);
+                char2 = num2.charAt(num2.length() - 1 - i);
             }
             carry = add(char1, char2, carry, result);
         }
-        String str = result.toString();
+        int zero = 0;
+        while (result.charAt(zero) == '0') {
+            zero++;
+        }
+        String str = result.substring(zero);
         cache.put(num1 + num2, str);
         return str;
     }
@@ -102,10 +108,10 @@ class Solution {
     public char add(char num1, char num2, char carry, StringBuilder builder) {
         int result = num1 + num2 + carry - '0' - '0' - '0';
         if (result > 9) {
-            builder.append(result - 10);
+            builder.insert(0, result - 10);
             return '1';
         }
-        builder.append(result);
+        builder.insert(0, result);
         return '0';
     }
 }
