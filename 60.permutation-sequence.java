@@ -68,6 +68,8 @@ class Solution {
         }
 
         StringBuffer result = new StringBuffer();
+        
+        k--;
         for (int i = 0; i < n; i++) {
             int currentIndex = k / factorial[n - 1 - i];
             result.append(nums.get(currentIndex));
