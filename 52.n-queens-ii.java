@@ -24,7 +24,7 @@ class Solution {
                 }
             }
             if (!conflict) {
-                num += solveNQueens(allResult, position, n, index + 1, result);
+                num += solveNQueens(position, n, index + 1);
             }
         }
         return num;
